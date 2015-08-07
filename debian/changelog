@@ -2,7 +2,7 @@ clusto (0.7.8) unstable; urgency=medium
 
   * Remove dependency on distribute.
 
--- Paul Lathrop <paul@krux.com>  Fri, 7 Aug 2015 20:26:04 -0800
+ -- Paul Lathrop <paul@krux.com>  Fri, 7 Aug 2015 20:26:04 -0800
 
 clusto (0.7.8) unstable; urgency=low
 
