@@ -6,7 +6,7 @@
 %{!?_with_psycopg2: %{!?_without_psycopg2: %define _without_psycopg2 --without-psycopg2}}
 
 Name:		clusto
-Version:	0.7.8
+Version:	0.7.9
 Release:	0%{?dist}
 Summary:	Tools and libraries for organizing and managing infrastructure
 
@@ -78,6 +78,8 @@ cp -R web/static/* %{buildroot}%{_datadir}/%{name}/web/
 
 
 %changelog
+* Fri Aug 7 2015 Paul Lathrop <paul@krux.com> - 0.7.9-0
+- Remove dependency on distribute.
 * Wed Jul 29 2015 Mike Newton <mike@delusion.org> - 0.7.8-0
 - Merge pull request #71 from motivator/rm_bugs (Mike Newton)
 - Merge pull request #72 from motivator/ipython_version (Mike Newton)
@@ -538,4 +540,3 @@ cp -R web/static/* %{buildroot}%{_datadir}/%{name}/web/
 
 * Tue May 4 2010 Jorge A Gallegos <kad@blegh.net> - 0.5.26-1
 - First spec draft
-
