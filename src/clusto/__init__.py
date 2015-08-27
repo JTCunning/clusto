@@ -2,7 +2,7 @@ from clusto.schema import *
 from clusto.exceptions import *
 
 from clusto.drivers import DRIVERLIST, TYPELIST, Driver, ClustoMeta, IPManager
-from sqlalchemy.exc import ArgumentError, InvalidRequestError
+from sqlalchemy.exc import InvalidRequestError
 from sqlalchemy.orm.exc import NoResultFound
 from sqlalchemy import create_engine
 from sqlalchemy import select, and_
