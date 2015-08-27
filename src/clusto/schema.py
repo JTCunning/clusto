@@ -169,37 +169,52 @@ class Counter(object):
 
         self.value = start
 
-        audit_log.info('create counter entity=%s attr_key=%s value=%s', self.entity.name, self.attr_key, self.value)
 
-        SESSION.add(self)
-        SESSION.flush()
+        if SESSION.clusto_api:
+            raise NotImplementedError
+        else:
+            SESSION.add(self)
+            SESSION.flush()
+            audit_log.info('create counter entity=%s attr_key=%s value=%s', self.entity.name, self.attr_key, self.value)
 
     def next(self):
 
         self.value = Counter.value + 1
-        SESSION.flush()
-        audit_log.info('increment counter entity=%s attr_key=%s value=%s', self.entity.name, self.attr_key, self.value)
+        if SESSION.clusto_api:
+            raise NotImplementedError
+        else:
+            SESSION.flush()
+            audit_log.info('increment counter entity=%s attr_key=%s value=%s', self.entity.name, self.attr_key, self.value)
         return self.value
 
     def delete(self):
-        audit_log.info('delete counter entity=%s attr_key=%s value=%s', self.entity.name, self.attr_key, self.value)
-        SESSION.delete(self)
-        SESSION.flush()
+        if SESSION.clusto_api:
+            raise NotImplementedError
+        else:
+            SESSION.delete(self)
+            SESSION.flush()
+            audit_log.info('delete counter entity=%s attr_key=%s value=%s', self.entity.name, self.attr_key, self.value)
 
     @classmethod
     def get(cls, entity, keyname, default=0):
 
-        try:
-            ctr = SESSION.query(cls).filter(and_(cls.entity==entity,
-                                                 cls.attr_key==unicode(keyname))).one()
+        if SESSION.clusto_api:
+            raise NotImplementedError
+        else:
+            try:
+                ctr = SESSION.query(cls).filter(and_(cls.entity==entity,
+                                                     cls.attr_key==unicode(keyname))).one()
 
-        except sqlalchemy.orm.exc.NoResultFound:
-            ctr = cls(entity, keyname, default)
+            except sqlalchemy.orm.exc.NoResultFound:
+                ctr = cls(entity, keyname, default)
 
         return ctr
 
     @classmethod
     def query(cls):
+        if SESSION.clusto_api:
+            raise NotImplementedError
+
         return SESSION.query(cls)
 
 class ProtectedObj(object):
@@ -267,10 +282,13 @@ class Attribute(ProtectedObj):
             self.number = number
 
 
-        audit_log.info('create attribute entity=%s key=%s subkey=%s value=%s number=%s datatype=%s',
+        if SESSION.clusto_api:
+            raise NotImplementedError
+        else:
+            SESSION.add(self)
+            SESSION.flush()
+            audit_log.info('create attribute entity=%s key=%s subkey=%s value=%s number=%s datatype=%s',
                 self.entity.name, self.key, self.subkey, self.value, self.number, self.datatype)
-        SESSION.add(self)
-        SESSION.flush()
 
 
 
@@ -401,8 +419,11 @@ class Attribute(ProtectedObj):
         if SESSION.clusto_versioning_enabled:
             self.deleted_at_version = working_version()
         else:
-            SESSION.delete(self)
-            SESSION.flush()
+            if SESSION.clusto_api:
+                raise NotImplementedError
+            else:
+                SESSION.delete(self)
+                SESSION.flush()
 
     @classmethod
     def _version_args(cls):
@@ -461,6 +482,9 @@ class Attribute(ProtectedObj):
     def query(cls):
         args = cls._version_args()
 
+        if SESSION.clusto_api:
+            raise NotImplementedError
+
         return SESSION.query(cls).filter(and_(*args))
 
 class Entity(ProtectedObj):
@@ -490,10 +514,12 @@ class Entity(ProtectedObj):
 
         self.version = working_version()
 
-        audit_log.info('create entity %s driver=%s type=%s', self.name, self.driver, self.type)
-
-        SESSION.add(self)
-        SESSION.flush()
+        if SESSION.clusto_api:
+            raise NotImplementedError
+        else:
+            SESSION.add(self)
+            SESSION.flush()
+            audit_log.info('create entity %s driver=%s type=%s', self.name, self.driver, self.type)
 
     def __eq__(self, otherentity):
         """Am I the same as the Other Entity.
@@ -566,8 +592,11 @@ class Entity(ProtectedObj):
             if SESSION.clusto_versioning_enabled:
                 self.deleted_at_version = working_version()
             else:
-                SESSION.delete(self)
-                SESSION.flush()
+                if SESSION.clusto_api:
+                    raise NotImplementedError
+                else:
+                    SESSION.delete(self)
+                    SESSION.flush()
 
             clusto.commit()
             audit_log.info('delete entity %s', self.name)
@@ -588,6 +617,9 @@ class Entity(ProtectedObj):
 
     @classmethod
     def query(cls):
+        if SESSION.clusto_api:
+            raise NotImplementedError
+
         return SESSION.query(cls).filter(and_(*cls._version_args()))
 
 
