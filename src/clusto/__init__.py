@@ -2,7 +2,7 @@ from clusto.schema import *
 from clusto.exceptions import *
 
 from clusto.drivers import DRIVERLIST, TYPELIST, Driver, ClustoMeta, IPManager
-from sqlalchemy.exc import InvalidRequestError
+from sqlalchemy.exc import ArgumentError, InvalidRequestError
 from sqlalchemy.orm.exc import NoResultFound
 from sqlalchemy import create_engine
 from sqlalchemy import select, and_
@@ -31,11 +31,15 @@ def connect(config, echo=False):
     @param config: the config object
     """
 
-    SESSION.configure(bind=create_engine(config.get('clusto', 'dsn'),
-                                         echo=echo,
-                                         poolclass=SingletonThreadPool,
-                                         pool_recycle=600
-                                         ))
+    dsn = config.get('clusto', 'dsn')
+    if dsn.startswith('http'):
+        SESSION.clusto_api = True
+    else:
+        SESSION.configure(bind=create_engine(dsn,
+                                             echo=echo,
+                                             poolclass=SingletonThreadPool,
+                                             pool_recycle=600
+                                             ))
 
     SESSION.clusto_version = None
 

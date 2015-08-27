@@ -88,6 +88,7 @@ SESSION.clusto_versioning_enabled = True
 SESSION.clusto_version = None
 SESSION.clusto_user = None
 SESSION.clusto_description = None
+SESSION.clusto_api = False
 
 ENTITY_TABLE = Table('entities', METADATA,
                      Column('entity_id', Integer, primary_key=True),
