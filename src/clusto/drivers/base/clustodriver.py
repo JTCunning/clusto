@@ -1,4 +1,3 @@
-
 TYPELIST = {}
 DRIVERLIST = {}
 RESERVEDATTRS = {}
@@ -20,16 +19,16 @@ class ClustoDriver(type):
                            % (cls.__name__,
                               cls._driver_name,
                               DRIVERLIST[cls._driver_name].__name__))
-        
 
         DRIVERLIST[cls._driver_name] = cls
-        TYPELIST[cls._clusto_type] = cls
+        if not TYPELIST.get(cls._clusto_type):
+            TYPELIST[cls._clusto_type] = []
+
+        TYPELIST[cls._clusto_type].append(cls)
 
         # setup properties
         if not isinstance(cls._properties, dict):
             raise TypeError('_properties of %s is not a dict type.',
                             cls.__name__)
-        
 
         super(ClustoDriver, cls).__init__(name, bases, dct)
-
